@@ -1,119 +1,21 @@
-from scripts.add_note import add_note
+from src.notes import add_note, get_cards_id_by_query, get_note_by_id, update_note_by_id, add_notes_from_csv_file
+from src.decks import get_deck_names_and_ids
 import requests
 import re
 import csv
 import argparse
 
-endpoint="http://127.0.0.1:8765"
 
-# Connect to AnkiConnect API and get all Deck Names
-def get_deck_names_and_ids() -> str:
-    payload = {
-        "action": "deckNamesAndIds",
-        "version": 6,
-    }
+# Logger
+import logging
 
-    response = requests.post(endpoint, json=payload)
-    if response.status_code: #OK
-        body = response.json()
-        result = body["result"]
-        return result
-    else:
-        print(f"Request returned status code {response.status_code}")
-
-
-def add_notes_from_csv_file(file_name, deck_name):
-    model_name="Cloze" # By default gemini generates flashcards with cloze
-    with open(file_name, newline="") as f:
-        reader = csv.reader(f)
-        
-        # Iterate over each row in the file
-        for row in reader:
-            front_content = row[0]
-            back_content = row[1]
-
-            # Dynamically adapt the model_name
-            pattern = r"c1::*"
-            if not re.search(pattern, front_content):
-                model_name = "Basic"
-            else: 
-                model_name = "Cloze"
-
-            # Add note 
-            add_note(
-                deck_name,
-                model_name,
-                front_content,
-                back_content
-            )
-
-
-def get_cards_id_by_deckname(deck_name : str):
-    payload= {
-        "action": "findNotes",
-        "version": 6,
-        "params": {
-            "query": f'deck:"{deck_name}"'
-        }
-    }
-
-    print(payload)
-
-    response = requests.post(endpoint, json=payload)
-    body = response.json()
-    return body['result']
-
-def get_cards_id_by_query(query : str):
-    payload= {
-        "action": "findNotes",
-        "version": 6,
-        "params": {
-            "query": f'"{query}"'
-        }
-    }
-
-    response = requests.post(endpoint, json=payload)
-    body = response.json()
-    return body['result']
-
-def get_notes_info_by_id(note_ids : list):
-    payload = {
-        "action": "notesInfo",
-        "version": 6,
-        "params": {
-            "notes": note_ids
-        }
-    }
-    response = requests.post(endpoint, json=payload)
-    body= response.json()
-    return body['result']
-
-def update_note(note_id: int, front: str = None, back: str = None, tags: list = None):
-    # Construct the fields dynamically based on what is provided
-    fields = {}
-    if front:
-        fields["Text"] = front
-    if back:
-        fields["Back Extra"] = back
-
-    payload = {
-        "action": "updateNote",
-        "version": 6,
-        "params": {
-            "note": {
-                "id": note_id,
-                "fields": fields
-            }
-        }
-    }
-    
-    if tags:
-        payload["params"]["note"]["tags"] = tags
-
-    response = requests.post(endpoint, json=payload)
-    return response.json()
-
+logging.basicConfig(
+    level=logging.DEBUG,
+    format="%(asctime)s [%(levelname)s] %(name)s - %(message)s"
+)
  
+
+# Main function
 def main() -> None:
     # Check if AnkiConnect is up
     deck_names = get_deck_names_and_ids()
@@ -147,8 +49,6 @@ def main() -> None:
         note_fields = note_info[0]['fields']
         for field in note_fields:
             print(f"{field} : {note_fields[field]['value']}")
-
-        #print(note_info["fields"])
     if args.update_note_by_id:
         ids = list()
         ids.append(int(args.update_note_by_id))

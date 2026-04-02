@@ -1,10 +1,7 @@
-import requests 
+import re 
 from dataclasses import dataclass, field
 from typing import Optional
-import json 
-import re
 
-ENDPOINT="http://127.0.0.1:8765" # AnkiConnect works only locally
 
 @dataclass
 class NoteBuilder:
@@ -101,26 +98,3 @@ def fix_formatting(text):
     text = re.sub(r'\*\*(.*?)\*\*', r'<b>\1</b>', text)
     result = re.sub(r'\$(.*?)\$', r'\(\1\)', text)
     return result
-
-# Add a note to an Anki Deck 
-# You need to specify: a deck name (that must exists), a model name (that must be allowed), a front content and back content
-def add_note(deck_name, model_name, front_content, back_content):
-    #print(f"Deck Name: {deck_name}\n Model Name: {model_name}\n Front Content: {front_content}\n Back Content: {back_content}")
-
-    front_content = fix_formatting(front_content)
-    back_content = fix_formatting(back_content)
-
-    payload_builder = NoteBuilder().deck(deck_name)
-    if model_name == "Cloze":
-        payload_builder= payload_builder.cloze(front_content,back_content)
-    else:
-        payload_builder = payload_builder.basic(front_content,back_content)
-
-    payload = payload_builder.build()
-
-    response = requests.post(ENDPOINT, json=payload) # Make request
-    if not response.status_code == 200: #OK
-        print("Error, printing full body response\n")
-        body=response.json()
-        print(body)
-    
