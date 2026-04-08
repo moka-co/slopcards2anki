@@ -29,4 +29,6 @@ Use the correct option depending on what you need to do e.g. an user may ask you
 
 Ensure that the script runned correctly by checking the output. Notice the user of any results.
 
-If you are on Windows try using `python3` instead of `python`.
+## Suggestions and clues
+- If you are on Windows try using `python3` instead of `python`.
+
