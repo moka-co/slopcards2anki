@@ -14,7 +14,7 @@
 
 ### Installation
 Follow your favorite tool instructions on how to add this skill. 
-Usually it involve cloning this repo into a `.skills` directory:
+Usually this involves cloning this repository into a `.skills` directory:
 ```bash
 git clone https://github.com/moka-co/slopcards2anki.git
 ```
