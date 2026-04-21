@@ -29,14 +29,15 @@ def main() -> None:
     parser.add_argument("--new_front_text")
     parser.add_argument("--new_back_text")
     parser.add_argument("--check_anki", action="store_true", help="Check if Anki is running and exit")
+    parser.add_argument("--try_launch_anki", action="store_true", help="Calls a script that make a tentative to launch Anki")
 
     # Args parser for editing notes
     args = parser.parse_args()
 
     # Check if AnkiConnect is up
-    if not check_anki.is_anki_running():
-        logger.error("Error with AnkiConnect, no new notes are added")
-        return
+    #if not check_anki.is_anki_running():
+    #    logger.error("Error with AnkiConnect, no new notes are added")
+    #    return
 
     if args.find_note:
         card_ids = notes.get_cards_id_by_query(args.find_note)
@@ -59,10 +60,20 @@ def main() -> None:
         result = update_note(ids[0], front=args.new_front_text, back=args.new_back_text)
     elif args.f and args.deck_name:
         notes.add_notes_from_csv_file(args.f, args.deck_name)
-        print("Script correctly finished!")
     elif args.check_anki:
-        check_anki.is_anki_running()
-        check_anki.is_endpoint_active()
+        # Check if Anki is Running
+        if check_anki.is_anki_running():
+            logger.info("Anki is running")
+        else:
+            logger.error("Anki is not running. Please start it before calling any other functions. You can try `--try_launch_anki` or starting it manually")
+
+        # Check if AnkiConnect works
+        if check_anki.is_endpoint_active():
+            logger.info("Anki Connect add-on is up and working")
+        else:
+            logger.error("Anki Connect is not reachable")
+    elif args.try_launch_anki:
+        check_anki.try_launch_anki()
 
     return 0
 

@@ -26,9 +26,10 @@ Now edit the note specifying the note id, run `main.py` with the following argum
 
 Use the correct option depending on what you need to do e.g. an user may ask you to add more context in a cloze note; in such case you need to first generate the new back text by improving the previous one, then run the script `main.py --update_note_by_id insert_card_id_here --new_back_text "insert_new_back_text_here"` by utilizing the proper values for the arguments.
 
-
 Ensure that the script runned correctly by checking the output. Notice the user of any results.
 
 ## Suggestions and clues
 - If you are on Windows try using `python3` instead of `python`.
+- Use argument `--anki_check` to check if Anki is running
+- Use argument `--try_launch_anki` to attempt to launch Anki if it is not running
 
