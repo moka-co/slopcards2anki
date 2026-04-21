@@ -16,7 +16,7 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install ruff mypy requests types-requests
+          pip install ruff mypy requests types-requests types-psutil
 
       - name: Run Ruff (Linting)
         run: ruff check .
