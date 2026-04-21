@@ -1,14 +1,15 @@
 import requests
-import json 
 import re
 import logging
+import csv
+from note_utils import NoteBuilder, fix_formatting
 
 ENDPOINT="http://127.0.0.1:8765" # AnkiConnect works only locally
 
 logger = logging.getLogger(__name__)
 
 # Get cards id by specifying a deck name
-def get_cards_id_by_deckname(deck_name : str):
+def get_cards_id_by_deckname(deck_name : str) -> list | None:
     payload= {
         "action": "findNotes",
         "version": 6,
@@ -19,8 +20,10 @@ def get_cards_id_by_deckname(deck_name : str):
 
     try: 
         response = requests.post(ENDPOINT, json=payload)
+        response.raise_for_status()
     except Exception as e:
         logger.error(f"Failed to get cards id by deckaname: {e}")
+        return None
    
     body = response.json()
     return body['result']
@@ -29,7 +32,7 @@ def get_cards_id_by_deckname(deck_name : str):
 # e.e. if the query is "*" then it will return every note 
 # e.g. if the query is 'deck: "Test Deck"' it will return every note id from that deck
 #TODO: add a query sanitizer 
-def get_cards_id_by_query(query : str):
+def get_cards_id_by_query(query : str) -> list | None:
     payload= {
         "action": "findNotes",
         "version": 6,
@@ -40,14 +43,16 @@ def get_cards_id_by_query(query : str):
 
     try: 
         response = requests.post(ENDPOINT, json=payload)
+        response.raise_for_status()
     except Exception as e:
         logger.error(f"Failed to get cards id by query: {e}")
+        return None
 
     body = response.json()
     return body['result']
 
 # Get notes info i.e. content, tags etc... by specifying a list of note ids
-def get_notes_info_by_id(note_ids : list):
+def get_notes_info_by_id(note_ids : list) ->  list | None:
     payload = {
         "action": "notesInfo",
         "version": 6,
@@ -58,8 +63,10 @@ def get_notes_info_by_id(note_ids : list):
 
     try:
         response = requests.post(ENDPOINT, json=payload)
+        response.raise_for_status()
     except Exception as e:
         logger.error(f"Failed to get notes info by id: {e}")
+        return None 
 
     body= response.json()
     return body['result']
@@ -82,11 +89,10 @@ def add_note(deck_name, model_name, front_content, back_content):
     payload = payload_builder.build()
 
     try:
-        response = requests.post(ENDPOINT, json=payload) # Make request
+        requests.post(ENDPOINT, json=payload) # Make request
     except Exception as e:
         logger.error(f"Failed to add note (model: {model_name}) to deck {deck_name}\n Front Content: {front_content}\n Back Content: {back_content}\nError: {e}")
-    
-    body=response.json()
+
     
 
 # Read a CSV file and add each note to the specified deck
@@ -120,12 +126,12 @@ def add_notes_from_csv_file(file_name, deck_name):
 # Optional arguments: 
 # - front and back content (that also works for cloze and other notes)
 # - list of tags
-def update_note(note_id: int, front: str = None, back: str = None, tags: list = None):
+def update_note(note_id: int, front: str = "", back: str = "", tags: list = []) -> list | None:
     # Construct the fields dynamically based on what is provided
     fields = {}
-    if front:
+    if front != "":
         fields["Text"] = front
-    if back:
+    if back != "":
         fields["Back Extra"] = back
 
     payload = {
@@ -134,17 +140,17 @@ def update_note(note_id: int, front: str = None, back: str = None, tags: list = 
         "params": {
             "note": {
                 "id": note_id,
-                "fields": fields
+                "fields": fields,
+                "tags": tags
             }
         }
     }
-    
-    if tags:
-        payload["params"]["note"]["tags"] = tags
 
     try:
         response = requests.post(ENDPOINT, json=payload)
+        response.raise_for_status()
     except Exception as e:
         logger.error(f"Failed to update note with id {note_id}\n Error: {e}")
+        return None 
     
     return response.json()

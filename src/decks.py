@@ -6,7 +6,7 @@ logger = logging.getLogger(__name__)
 ENDPOINT="http://127.0.0.1:8765" # AnkiConnect works only locally
 
 # Connect to AnkiConnect API and return all Deck Names
-def get_deck_names_and_ids() -> str:
+def get_deck_names_and_ids() -> str | None:
     payload = {
         "action": "deckNamesAndIds",
         "version": 6,
@@ -19,3 +19,4 @@ def get_deck_names_and_ids() -> str:
         return result
     else:
         print(f"Request returned status code {response.status_code}")
+        return None

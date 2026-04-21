@@ -67,7 +67,7 @@ def try_launch_anki():
                 raise FileNotFoundError("Anki not found in PATH")
 
             subprocess.Popen(
-                [command],
+                [anki_path],
                 start_new_session=True,
                 stdin=subprocess.DEVNULL,
                 stdout=subprocess.DEVNULL,

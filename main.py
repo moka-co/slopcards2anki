@@ -1,15 +1,10 @@
+from typing import List
 import src.notes as notes
-import src.decks as decks
 import src.utils.check_anki as check_anki
-import requests
-import re
-import csv
 import argparse
-
-
-# Logger
 import logging
 
+# Logger
 logging.basicConfig(
     level=logging.DEBUG,
     format="%(asctime)s [%(levelname)s] %(name)s - %(message)s"
@@ -18,7 +13,7 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 # Main function
-def main() -> None:
+def main() -> int:
     # Args parser for add notes from csv
     parser = argparse.ArgumentParser(description="A script that read a csv file and add automatically notes to Anki through Anki Connect.")
     parser.add_argument("--deck_name", help="The name of the Anki deck where to add notes")
@@ -41,7 +36,7 @@ def main() -> None:
 
     if args.find_note:
         card_ids = notes.get_cards_id_by_query(args.find_note)
-        if len(card_ids) != 0:
+        if card_ids is not None and len(card_ids) != 0:
             card_id = card_ids[0]
             print(card_id)
     elif args.get_note_by_id:
@@ -49,15 +44,16 @@ def main() -> None:
         ids.append(int(args.get_note_by_id))
         note_info = notes.get_notes_info_by_id(ids)
 
-        note_fields = note_info[0]['fields']
-        for field in note_fields:
-            print(f"{field} : {note_fields[field]['value']}")
+        if note_info is not None:
+            note_fields = note_info[0]['fields']
+            for field in note_fields:
+                print(f"{field} : {note_fields[field]['value']}")
     elif args.update_note_by_id:
         ids = list()
         ids.append(int(args.update_note_by_id))
         note_info = notes.get_notes_info_by_id(ids)
 
-        result = update_note(ids[0], front=args.new_front_text, back=args.new_back_text)
+        notes.update_note(ids[0], front=args.new_front_text, back=args.new_back_text)
     elif args.f and args.deck_name:
         notes.add_notes_from_csv_file(args.f, args.deck_name)
     elif args.check_anki:

@@ -1,0 +1,13 @@
+[tool.ruff]
+
+# Set maximum line length
+line-length = 88
+
+[tool.ruff.format]
+# Enable formatting support 
+quote-style = "double"
+
+[tool.mypy]
+mypy_path = "src" 
+explicit_package_bases = true
+namespace_packages = true
