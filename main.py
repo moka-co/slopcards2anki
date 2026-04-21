@@ -1,4 +1,3 @@
-from typing import List
 import src.notes as notes
 import src.utils.check_anki as check_anki
 import argparse
