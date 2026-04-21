@@ -10,7 +10,7 @@ logger = logging.getLogger(__name__)
 
 
 # Iterate over the list of processes through "psutil" and check if anki is running
-def is_anki_running():
+def is_anki_running() -> bool:
     process_name = "anki"
 
     for proc in psutil.process_iter(["name"]):
@@ -23,17 +23,19 @@ def is_anki_running():
 
 
 # Checks if the AnkiConnect API (or any endpoint) is responding.
-def is_endpoint_active(url="http://127.0.0.1:8765"):
+def is_endpoint_active(url="http://127.0.0.1:8765") -> bool:
     try:
         # We use a short timeout so the script doesn't hang if Anki is closed
         response = requests.get(url, timeout=2)
 
         if response.status_code == 200:  # status code 200 means success
             logger.debug(f"AnkiConnect is active at {url}")
+            return True
     except (requests.ConnectionError, requests.Timeout):
         logger.error(
             f"Error when connecting to {url}. Check if AnkiConnect plug-in is enabled and 'webBindAddress':'webBindPort' correspondes to {url}"
         )
+    return False
 
 
 # Try to launch Anki in the background
