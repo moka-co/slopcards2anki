@@ -1,5 +1,5 @@
 ---
-name: re-markable-slopcards
+name: slopcards-to-anki
 description: Manages Anki flashcards via AnkiConnect - adds flashcards from CSV files, searches existing flashcards, and updates card content. Use when working with Anki flashcards, CSV imports, spaced repetition, or when user mentions Anki, flashcards, or flashcard management.
 ---
 

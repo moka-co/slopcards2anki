@@ -1,4 +1,4 @@
-# Re Markable Slopcards
+# Slopcards to Anki
 Manages Anki flashcards via AnkiConnect - adds notes from CSV files, searches existing cards, and updates card content. Use when working with Anki flashcards, CSV imports, spaced repetition, or when user mentions Anki, flashcards, or note management.
 
 ## Prerequisites
