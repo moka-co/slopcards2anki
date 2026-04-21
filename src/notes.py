@@ -18,7 +18,7 @@ def get_cards_id_by_deckname(deck_name : str):
     }
 
     try: 
-        response = requests.post(endpoint, json=payload)
+        response = requests.post(ENDPOINT, json=payload)
     except Exception as e:
         logger.error(f"Failed to get cards id by deckaname: {e}")
    
@@ -39,7 +39,7 @@ def get_cards_id_by_query(query : str):
     }
 
     try: 
-        response = requests.post(endpoint, json=payload)
+        response = requests.post(ENDPOINT, json=payload)
     except Exception as e:
         logger.error(f"Failed to get cards id by query: {e}")
 
@@ -57,7 +57,7 @@ def get_notes_info_by_id(note_ids : list):
     }
 
     try:
-        response = requests.post(endpoint, json=payload)
+        response = requests.post(ENDPOINT, json=payload)
     except Exception as e:
         logger.error(f"Failed to get notes info by id: {e}")
 
@@ -143,7 +143,7 @@ def update_note(note_id: int, front: str = None, back: str = None, tags: list = 
         payload["params"]["note"]["tags"] = tags
 
     try:
-        response = requests.post(endpoint, json=payload)
+        response = requests.post(ENDPOINT, json=payload)
     except Exception as e:
         logger.error(f"Failed to update note with id {note_id}\n Error: {e}")
     

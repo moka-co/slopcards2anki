@@ -3,6 +3,8 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+ENDPOINT="http://127.0.0.1:8765" # AnkiConnect works only locally
+
 # Connect to AnkiConnect API and return all Deck Names
 def get_deck_names_and_ids() -> str:
     payload = {
@@ -10,7 +12,7 @@ def get_deck_names_and_ids() -> str:
         "version": 6,
     }
 
-    response = requests.post(endpoint, json=payload)
+    response = requests.post(ENDPOINT, json=payload)
     if response.status_code: #OK
         body = response.json()
         result = body["result"]
