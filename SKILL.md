@@ -1,35 +1,66 @@
 ---
-name: note-to-anki-flashcards-manager
-description: manager that help to add notes and generate
+name: re-markable-slopcards
+description: Manages Anki flashcards via AnkiConnect - adds flashcards from CSV files, searches existing flashcards, and updates card content. Use when working with Anki flashcards, CSV imports, spaced repetition, or when user mentions Anki, flashcards, or flashcard management.
 ---
 
-# Instructions
+#  Re Markable Slopcards - Anki Flashcard Manager
+Manages Anki flashcards using the main.py script via AnkiConnect.
 
-**Add notes from a CSV file**
-Run `main.py` with the following arguments:
-1. `--f file_name.csv` that is the file name, the file name must be a `.csv` file
-2. `--deck_name "deck name"` that is provided by the user. If the user didn't provide one, ask him for the deck name
+## CSV Format
 
-**Edit a note**:
-First **search the note id** by running `main.py` with the following argument:
--  `--find_note your_clue` substitute "your_clue" with a clue, typically provided by the user
+## Add flashcards from a CSV file
+Import flashcards from a CSV file:
+`main.py --f file_name.csv --deck_name "Deck Name"`
 
-This will return three useful informations:
-- The **note id**
-- The front text
-- The back text
+**CSV format required**:
+- `front`: The question or prompt
+- `back`: The answer or explanation
 
-Now edit the note specifying the note id, run `main.py` with the following arguments:
-- `--update_note_by_id card_id` 
-- (OPTIONAL) `--new_front_text "Updated fresh new front text"`
-- (OPTIONAL) `--new_back_text "Better back text"`
+If the user doesn't specify a deck name, ask them which deck to use. Never assume the deck name.
 
-Use the correct option depending on what you need to do e.g. an user may ask you to add more context in a cloze note; in such case you need to first generate the new back text by improving the previous one, then run the script `main.py --update_note_by_id insert_card_id_here --new_back_text "insert_new_back_text_here"` by utilizing the proper values for the arguments.
+## Searching for flashards
+Find a flashcard by keyword:
+`main.py --find_note "search term"`
 
-Ensure that the script runned correctly by checking the output. Notice the user of any results.
+Returns:
+- CARD ID (needed for updates)
+- Front text
+- Back text
 
-## Suggestions and clues
-- If you are on Windows try using `python3` instead of `python`.
-- Use argument `--anki_check` to check if Anki is running
-- Use argument `--try_launch_anki` to attempt to launch Anki if it is not running
+If multiple flashcards match, review the returned text to identify the correct flashcard.
 
+## Updating cards
+
+Update an existing flashcard using its ID::
+- To update front: `main.py --update_note_by_id CARD_ID --new_front_text "Updated fresh new front text"`
+- To update back: `main.py --update_note_by_id CARD_ID --new_back_text "Better back text"`
+- To update both: include both `--new_front_text` and `--new_back_text` flags
+
+To update both use:
+```bash
+main.py --update_note_by_id CARD_ID --new_front_text "New front" --new_back_text "New back"
+```
+
+**Workflow for enhancing an existing cards:**
+1. Search for the flashcard: `main.py --find_note "keyword"`
+2. Review existing back text
+3. Generate improved back text with additional context, you may ask the user where to look for context
+4. Update `main.py --update_note_by_id CARD_ID --new_back_text "Enhanced text with extra context"`
+
+Ensure that the script runned correctly by checking the output. Notice the user of any output you see.
+
+## Troubleshooting
+Always notify the user of any error you encounter.
+
+**If Anki is not running**
+1. Run this exact command `main.py --anki_check`
+2. Attempt auto-launch with this exact command: `main.py --try_launch_anki`
+3. If auto-launch fails, notice the user and ask him to start Anki.
+
+**If flashcard not found**
+- Try broader search terms
+- Check if card exists in the correct deck
+- Ask the user for what to do
+
+**On Windows:**
+Use `python3 main.py` instead of `python main.py` if you encounter errors.
