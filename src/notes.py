@@ -2,7 +2,7 @@ import requests
 import re
 import logging
 import csv
-from note_utils import NoteBuilder, fix_formatting
+from src.note_utils import NoteBuilder, fix_formatting
 
 ENDPOINT = "http://127.0.0.1:8765"  # AnkiConnect works only locally
 
