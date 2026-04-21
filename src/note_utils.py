@@ -1,4 +1,4 @@
-import re 
+import re
 from dataclasses import dataclass, field
 
 
@@ -26,7 +26,6 @@ class NoteBuilder:
     _tags: list = field(default_factory=list)
     _allow_duplicates: bool = False
 
-
     def deck(self, deck_name: str) -> "NoteBuilder":
         self._deck_name = deck_name
         return self
@@ -35,25 +34,28 @@ class NoteBuilder:
         self._model_name = model_name
         return self
 
-
-    def tag(self, *tags: str) -> "NoteBuilder": 
+    def tag(self, *tags: str) -> "NoteBuilder":
         self._tags.extend(tags)
         return self
 
     def allow_duplicates(self, allow: bool) -> "NoteBuilder":
         self._allow_duplicates = allow
         return self
-    
+
     def add_field(self, name: str, value: str) -> "NoteBuilder":
         self._fields[name] = value
         return self
-    
+
     def basic(self, front: str, back: str) -> "NoteBuilder":
-        return self.model("Basic").add_field("Front",front).add_field("Back",back)
-    
+        return self.model("Basic").add_field("Front", front).add_field("Back", back)
+
     def cloze(self, text: str, back_extra: str = "") -> "NoteBuilder":
         """Shorthand for a Cloze note. Text must contain {{c1::...}} markers."""
-        return self.model("Cloze").add_field("Text", text).add_field("Back Extra", back_extra)
+        return (
+            self.model("Cloze")
+            .add_field("Text", text)
+            .add_field("Back Extra", back_extra)
+        )
 
     def _validate(self):
         errors = []
@@ -65,10 +67,14 @@ class NoteBuilder:
             errors.append("At least one field is required.")
         if self._model_name == "Cloze" and "Text" in self._fields:
             if "{{c" not in self._fields["Text"]:
-                errors.append("Cloze note 'Text' field must contain at least one {{c1::...}} marker.")
+                errors.append(
+                    "Cloze note 'Text' field must contain at least one {{c1::...}} marker."
+                )
         if errors:
-            raise ValueError("NoteBuilder validation failed:\n" + "\n".join(f"  - {e}" for e in errors))
-
+            raise ValueError(
+                "NoteBuilder validation failed:\n"
+                + "\n".join(f"  - {e}" for e in errors)
+            )
 
     def build(self) -> dict:
         """Returns the raw AnkiConnect payload dict."""
@@ -94,6 +100,6 @@ class NoteBuilder:
 # However, Anki wants a different format i.e. <b>word</b>
 # A similar issue with Latex
 def fix_formatting(text):
-    text = re.sub(r'\*\*(.*?)\*\*', r'<b>\1</b>', text)
-    result = re.sub(r'\$(.*?)\$', r'\(\1\)', text)
+    text = re.sub(r"\*\*(.*?)\*\*", r"<b>\1</b>", text)
+    result = re.sub(r"\$(.*?)\$", r"\(\1\)", text)
     return result
