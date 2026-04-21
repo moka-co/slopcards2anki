@@ -19,11 +19,6 @@ logger = logging.getLogger(__name__)
 
 # Main function
 def main() -> None:
-    # Check if AnkiConnect is up
-    if not check_anki.is_anki_running():
-        logger.error("Error with AnkiConnect, no new notes are added")
-        return
-
     # Args parser for add notes from csv
     parser = argparse.ArgumentParser(description="A script that read a csv file and add automatically notes to Anki through Anki Connect.")
     parser.add_argument("--deck_name", help="The name of the Anki deck where to add notes")
@@ -33,10 +28,15 @@ def main() -> None:
     parser.add_argument("--update_note_by_id", help="Edit a note by id")
     parser.add_argument("--new_front_text")
     parser.add_argument("--new_back_text")
-    parser.add_argument("--check_anki")
+    parser.add_argument("--check_anki", action="store_true", help="Check if Anki is running and exit")
 
     # Args parser for editing notes
     args = parser.parse_args()
+
+    # Check if AnkiConnect is up
+    if not check_anki.is_anki_running():
+        logger.error("Error with AnkiConnect, no new notes are added")
+        return
 
     if args.find_note:
         card_ids = notes.get_cards_id_by_query(args.find_note)
@@ -61,7 +61,8 @@ def main() -> None:
         notes.add_notes_from_csv_file(args.f, args.deck_name)
         print("Script correctly finished!")
     elif args.check_anki:
-        utils.is_anki_running()
+        check_anki.is_anki_running()
+        check_anki.is_endpoint_active()
 
     return 0
 
