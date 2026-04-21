@@ -3,10 +3,45 @@ name: slopcards-to-anki
 description: Manages Anki flashcards via AnkiConnect - adds flashcards from CSV files, searches existing flashcards, and updates card content. Use when working with Anki flashcards, CSV imports, spaced repetition, or when user mentions Anki, flashcards, or flashcard management.
 ---
 
-#  Re Markable Slopcards - Anki Flashcard Manager
-Manages Anki flashcards using the main.py script via AnkiConnect.
+#  Slopcard2Anki - Anki Flashcard Manager
+This skill allows Claude/Gemini to read local files, distill them into high-quality flashcards, and sync them to Anki via a local `main.py` script.
 
-## CSV Format
+## Core Workflow
+When a user asks to "make flashcards" from a file or text, follow these steps:
+1. **Analyze:** Read the source file/text provided by the user.
+2. **Extract:** Identify key concepts suitable for Spaced Repetition.
+3. **Generate CSV:** Create a temporary file (e.g., `tmp_cards.csv`) using the format defined below.
+4. **Execute:** Run `python3 main.py --f tmp_cards.csv --deck_name "Target Deck"`.
+5. **Clean up:** Delete the temporary CSV file after a successful run.
+
+## Card Creation Principles 
+To ensure high-quality cards, follow these rules when generating content:
+- **Atomicity:** One card = one specific fact. Do not cram whole paragraphs into the 'back'.
+- **Clarity:** Use bold text for key terms.
+- Follow Data sanization rules
+- **Cloze Deletion**: some cards and concepts must be cloze e.g. Front: "The derivative of an exponential is \_\_\_\_" Back: "Another derivative". You can use Anki's Cloze format: "{{c1::hidden text}}". 
+    - *Example Front:* "The derivative of an exponential is {{c1::another derivative}}."
+- **Formula Integrity:** If a formula is present, preserve it exactly using LaTeX syntax.
+    - Use $formula$ for inline math.
+    - USE $$formula$$ for display style math
+- **The "Principle of Two-Way" (Optional):** For key formulas, create two cards: 
+   - Card A: Name/Concept -> Formula
+   - Card B: Formula -> Name/Concept/Variable definitions.
+- **Context through wikilinks**: if a markdown file has wikilink, generate atleast 1 question that recall that wikilinked argument (reading the wikilinked reference!), make sure the note make sense in the context of the note
+- **Output:** Write the flashcards into a temporary .csv file.
+
+### Data Sanization
+- Ensure LaTeX backslashes (\\) are preserved and not treated as escape characters by the CLI.
+- Replace internal newlines with <br>
+- Escape double quotes by doubling them ("").
+
+## CSV Format Required
+The `main.py` script expects a standard CSV with a header row. Use this structure:
+```csv
+front, back
+"What is the capital of France?", "Paris"
+```
+
 
 ## Add flashcards from a CSV file
 Import flashcards from a CSV file:
