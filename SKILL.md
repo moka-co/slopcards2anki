@@ -91,7 +91,7 @@ Ensure that the script runned correctly by checking the output. Notice the user 
 Always notify the user of any error you encounter.
 
 **If Anki is not running**
-1. Run this exact command `main.py --anki_check`
+1. Run this exact command `main.py --check_anki` and **WAIT** 3 to 5 seconds
 2. Attempt auto-launch with this exact command: `main.py --try_launch_anki`
 3. If auto-launch fails, notice the user and ask him to start Anki.
 
