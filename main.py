@@ -1,3 +1,4 @@
+from src import decks
 import src.notes as notes
 import src.utils.check_anki as check_anki
 import argparse
@@ -19,6 +20,9 @@ def main() -> int:
     )
     parser.add_argument(
         "--deck_name", help="The name of the Anki deck where to add notes"
+    )
+    parser.add_argument(
+        "--create_deck", help="Create a new deck, requires that you specify a name"
     )
     parser.add_argument(
         "--f", "--file-name", help="The path to the file containing your notes"
@@ -43,8 +47,11 @@ def main() -> int:
 
     # Args parser for editing notes
     args = parser.parse_args()
+    if args.create_deck:
+        result = decks.create_deck(args.create_deck)
+        logger.debug(result)
 
-    if args.find_note:
+    elif args.find_note:
         card_ids = notes.get_cards_id_by_query(args.find_note)
         if card_ids is not None and len(card_ids) != 0:
             card_id = card_ids[0]

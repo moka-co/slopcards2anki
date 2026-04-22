@@ -22,14 +22,10 @@ def get_deck_names_and_ids() -> str | None:
         print(f"Request returned status code {response.status_code}")
         return None
 
-def create_deck(deck_name : str) -> str | None:
-    payload = {
-        "action": "createDeck",
-        "version": 6,
-        "params" : {
-            "deck" : deck_name
-        }
-    }
+# Connect to AnkiConnect API and submit a payload that create a new deck
+# Requires a deck name in input
+def create_deck(deck_name: str) -> str | None:
+    payload = {"action": "createDeck", "version": 6, "params": {"deck": deck_name}}
 
     response = requests.post(ENDPOINT, json=payload)
     if response.status_code:  # OK
@@ -39,4 +35,3 @@ def create_deck(deck_name : str) -> str | None:
     else:
         print(f"Request returned status code {response.status_code}")
         return None
-    
