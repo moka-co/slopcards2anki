@@ -22,6 +22,7 @@ def get_deck_names_and_ids() -> str | None:
         print(f"Request returned status code {response.status_code}")
         return None
 
+
 # Connect to AnkiConnect API and submit a payload that create a new deck
 # Requires a deck name in input
 def create_deck(deck_name: str) -> str | None:

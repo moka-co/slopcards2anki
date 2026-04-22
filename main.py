@@ -24,9 +24,7 @@ def main() -> int:
     parser.add_argument(
         "--create_deck", help="Create a new deck, requires that you specify a name"
     )
-    parser.add_argument(
-        "--list_decks", help="List decks name", action="store_true"
-    )
+    parser.add_argument("--list_decks", help="List decks name", action="store_true")
     parser.add_argument(
         "--f", "--file_name", help="The path to the file containing your notes"
     )
