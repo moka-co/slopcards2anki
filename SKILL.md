@@ -6,6 +6,9 @@ description: Manages Anki flashcards via AnkiConnect - adds flashcards from CSV 
 #  Slopcard2Anki - Anki Flashcard Manager
 This skill allows Claude/Gemini to read local files, distill them into high-quality flashcards, and sync them to Anki via a local `main.py` script.
 
+## Operational Environment
+This skill operates exclusively in a **local execution context**. It requires access to the host machine's filesystem to read/write CSV files and access to `localhost:8765` to communicate with AnkiConnect. If you are being executed in a cloud-hosted web sandbox (e.g., a browser-based chat interface), notify the user that you cannot reach their local Anki instance and recommend using a local CLI-based agent instead.
+
 ## Prerequisites
 Ensure the environment has the necessary dependencies:
 ```shell

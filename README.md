@@ -6,9 +6,9 @@
 - **LaTeX Support & STEM Ready**: Full support for inline `$math$` and block `$$math$$` notation, preserved perfectly for Anki's rendering engine
 - **Smart Cloze Deletion**: Identifies definitions and sequences to generate cloze card dynamically
 
-> [!IMPORTANT] Compatibility
+> [!IMPORTANT]
 > This is a **local AI skill**. It is designed to run in environments where the AI has access to your local machine:
-> - ✅ Supported: Claude Code, Gemini CLI, Aider, or any local LLM agent with shell access.
+> - ✅ Supported: Claude Code, Gemini CLI, Aider, or **any local LLM agent with shell access**.
 > - ❌ Not Supported: Standard web interfaces (claude.ai, gemini.google.com, chatgPT.com). These browser-based tools cannot communicate with your local Anki installation.
 
 
