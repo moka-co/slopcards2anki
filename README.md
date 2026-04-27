@@ -1,4 +1,9 @@
 # 🗃️ Slopcards to Anki
+![Python](https://img.shields.io/badge/python-blue)
+![License](https://img.shields.io/badge/license-AGPL%20v3.0-blue)
+![Anki](https://img.shields.io/badge/Anki-Compatible-blue)
+![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen)
+
 `slopcards-to-anki` gives Claude/Gemini the ability to transform your **local markdown notes** into high-retention flashcards. It automatically uploads and syncs them to your local Anki profile. Perfect for **Obsidian** users.
 
 ## 🚀Features
