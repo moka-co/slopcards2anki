@@ -1,29 +1,45 @@
-# Slopcards to Anki
-`slopcards-to-anki` is a local AI skill that empowers Claude/Gemini to transform markdown notes into high-retention flashcards. It automatically uploads and syncs them to your local Anki profile. Works great with PKMs like obsidian.md.
+# 🗃️ Slopcards to Anki
+`slopcards-to-anki` gives Claude/Gemini the ability to transform your **local markdown notes** into high-retention flashcards. It automatically uploads and syncs them to your local Anki profile. Perfect for **Obsidian** users.
 
-## Features
-- **Automatic Upload & Sync**: from your favorite AI CLI tool
-- **LaTeX Support**: Perfect for STEM students, automatically handles math blocks for Anki's rendering engine. 
-- **Smart Context**: Claude/Gemini can see your files and directory, so they can generate better flashcards by understanding the context of your notes
+## 🚀Features
+- **Automatic Upload & Sync**: automatically breaks down complex notes into single-fact "atmoic" cards for maximum retention
+- **LaTeX Support & STEM Ready**: Full support for inline `$math$` and block `$$math$$` notation, preserved perfectly for Anki's rendering engine
+- **Smart Cloze Deletion**: Identifies definitions and sequences to generate cloze card dynamically
 
-## Quick Start
+> [!IMPORTANT] Compatibility
+> This is a **local AI skill**. It is designed to run in environments where the AI has access to your local machine:
+> - ✅ Supported: Claude Code, Gemini CLI, Aider, or any local LLM agent with shell access.
+> - ❌ Not Supported: Standard web interfaces (claude.ai, gemini.google.com, chatgPT.com). These browser-based tools cannot communicate with your local Anki installation.
 
-### Prerequisites
+
+## 🛠️ Quick Start
+### 1. Prerequisites
 - [Anki](https://apps.ankiweb.net/) must be installed and running
-- [AnkiConnect](https://ankiweb.net/shared/info/2055492159) add-on installed (Code: `2055492159`), leave default configuration
+- [AnkiConnect](https://ankiweb.net/shared/info/2055492159) Add on: Install code `2055492159` in anki (Tools > Add-ons > Get Add-ons)
 
-### Installation
-Follow your favorite tool instructions on how to add this skill. 
-Usually this involves cloning this repository into a `.skills` directory:
+### 2. Installation
+Clone this repository into your AI tool's designed skills directory (e.g., `~/.skills/` or within your project root)
+
 ```bash
 git clone https://github.com/moka-co/slopcards2anki.git
 ```
 
-### Usage
-Once the skill is added to Claude Code / Gemini CLI / Qwen CLI, you can type a prompt like this:
-```text
-Convert "My/Study/Note.md" into 30 atomic Anki flashcards using slopcards-to-anki SKILL
-```
+### 3. Usage
+Once the skill is registered with your AI CLI (Claude Code, Gemini CLI, etc.), you can use **natural language** to manage your deck.
 
-## Limitations
-This skill currently doesn't support images upload to notes. **As far as i know** and **with the tools i have tested** (Gemini and Qwen) they don't make flashcards with images. Very rarely i have seen Gemini making flashcards with "textual description" of a very simple image like a diagram.
+**Example Prompts**:
+- "Convert my 'Calculus_Notes.md' into 30 atomic flashcards using slopcards-to-anki"
+- "Find the Anki card about "Photosynthetis" and update the back with more detail from this paragraph."
+
+
+## 🏗️ How it works
+1. The AI (e.g. Claude Code / Gemini CLI) analyzes your text and identifies high-value concepts
+2. Then the AI calls a python interface that sanitizes data and pushes the cards into your local Anki profile
+
+## ⚠️ Scope & Roadmap
+- **Text & Math Focused**: currently optimized for text and LaTeX formulas.
+- **Media Support**: Image and audio uploads are not currently supported (help is appreciated).
+- **Format**: It has been tested with Markdown files, but it works with any file format that AI is capable of reading. However to get better result you may first want to use tools like [markitdown](https://github.com/microsoft/markitdown)
+
+
+## 🛠 Troubleshooting
