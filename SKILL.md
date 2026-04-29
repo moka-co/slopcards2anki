@@ -6,6 +6,17 @@ description: Manages Anki flashcards via AnkiConnect - adds flashcards from CSV 
 #  Slopcard2Anki - Anki Flashcard Manager
 This skill allows Claude/Gemini to read local files, distill them into high-quality flashcards, and sync them to Anki via a local `skill/main.py` script.
 
+## Usage via MCP
+
+When accessed as an MCP server, use these tools directly:
+
+- `list_anki_decks()` — list available decks
+- `create_anki_deck(name)` — create a deck
+- `find_cards_by_text(query)` — search notes
+- `update_anki_note(note_id, front, back)` — edit a note
+- `get_anki_status()` — check if Anki is running
+- `launch_anki()` — start Anki if needed
+
 ## Operational Environment
 This skill operates exclusively in a **local execution context**. It requires access to the host machine's filesystem to read/write CSV files and access to `localhost:8765` to communicate with AnkiConnect. If you are being executed in a cloud-hosted web sandbox (e.g., a browser-based chat interface), notify the user that you cannot reach their local Anki instance and recommend using a local CLI-based agent instead.
 
@@ -33,7 +44,7 @@ To ensure high-quality cards, follow these rules when generating content:
 - **Output:** Write the flashcards into a temporary .csv file under `.tmp/` directory e.g. `./tmp/tmp_flashcards.csv`.
 
 ## Data Sanization
-To ensure the CLI parses the data correctly, you **must**:
+When generating CSV files for `add_cards_from_csv`:
 - **No Headers**: do **not** include "Front, Back" headers rows in the CSV
 - **Escaping**: escape double quotes by doubling them ("").
 - **Newlines**: replace internal newlines with <br>
@@ -112,4 +123,4 @@ If the standard `python -m skill.main` fails, ensure your environment is set up 
 
 ---
 
-**Important**: always report the CLI output to the user to confirm the action was successful
+**Important**: always report the tool output to the user to confirm the action was successful
