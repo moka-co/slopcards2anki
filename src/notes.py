@@ -18,7 +18,7 @@ def get_cards_id_by_deckname(deck_name: str) -> list | None:
     }
 
     try:
-        response = requests.post(ENDPOINT, json=payload)
+        response = requests.post(ENDPOINT, json=payload, timeout=(5, 30))
         response.raise_for_status()
     except Exception as e:
         logger.error(f"Failed to get cards id by deckaname: {e}")
@@ -36,7 +36,7 @@ def get_cards_id_by_query(query: str) -> list | None:
     payload = {"action": "findNotes", "version": 6, "params": {"query": f'"{query}"'}}
 
     try:
-        response = requests.post(ENDPOINT, json=payload)
+        response = requests.post(ENDPOINT, json=payload, timeout=(5, 30))
         response.raise_for_status()
     except Exception as e:
         logger.error(f"Failed to get cards id by query: {e}")
@@ -51,7 +51,7 @@ def get_notes_info_by_id(note_ids: list) -> list | None:
     payload = {"action": "notesInfo", "version": 6, "params": {"notes": note_ids}}
 
     try:
-        response = requests.post(ENDPOINT, json=payload)
+        response = requests.post(ENDPOINT, json=payload, timeout=(5, 30))
         response.raise_for_status()
     except Exception as e:
         logger.error(f"Failed to get notes info by id: {e}")
@@ -78,7 +78,7 @@ def add_note(deck_name, model_name, front_content, back_content):
     payload = payload_builder.build()
 
     try:
-        requests.post(ENDPOINT, json=payload)  # Make request
+        requests.post(ENDPOINT, json=payload, timeout=(5, 30))  # Make request
     except Exception as e:
         logger.error(
             f"Failed to add note (model: {model_name}) to deck {deck_name}\n Front Content: {front_content}\n Back Content: {back_content}\nError: {e}"
@@ -128,7 +128,7 @@ def update_note(
     }
 
     try:
-        response = requests.post(ENDPOINT, json=payload)
+        response = requests.post(ENDPOINT, json=payload, timeout=(5, 30))
         response.raise_for_status()
     except Exception as e:
         logger.error(f"Failed to update note with id {note_id}\n Error: {e}")
