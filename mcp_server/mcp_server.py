@@ -3,10 +3,10 @@ from src import decks, notes
 from src.utils import check_anki
 from pathlib import Path
 import logging
-import sys 
+
 
 # Initialize FastMCP server
-mcp = FastMCP("slopcards2anki")
+mcp = FastMCP("slopcards2anki", instructions=Path("./mcp_server/INSTRUCTIONS.MD").read_text())
 
 # Configure logging to not interfere with stdio transport
 logging.basicConfig(
@@ -37,6 +37,16 @@ def create_anki_deck(name: str) -> str:
     if result:
         return result
     return "Error when creating deck name"
+
+
+@mcp.tool()
+def add_cards_from_csv(file_path: str, deck_name: str) -> str:
+    """Add cards from a CSV file to a specific Anki deck."""
+    try:
+        notes.add_notes_from_csv_file(file_path, deck_name)
+        return f"Processed cards from {file_path} for deck '{deck_name}'."
+    except Exception as e:
+        return f"Error processing CSV: {str(e)}"
 
 
 @mcp.tool()
@@ -72,19 +82,18 @@ def get_anki_status() -> str:
     return f"Anki Running: {running}\nAnkiConnect Active: {connected}"
 
 
-"""
-# Expose SKILL.MD
-@mcp.resource(uri="file://SKILL.MD")
-def get_skill() -> str:
-    path = Path(f"./SKILL.MD")
+# Read INSTRUCTIONS.MD for troubleshooting
+@mcp.resource(uri="file://INSTRUCTIONS.MD")
+def get_guidance() -> str:
+    path = Path("./mcp_server/INSTRUCTIONS.MD")
     if not path.exists():
-        raise FileNotFoundError(f"File SKILL.MD not found")
+        raise FileNotFoundError("File INSTRUCTIONS.MD not found")
     return path.read_text()
-"""
 
 
 if __name__ == "__main__":
     try:
+        logger.error("Before MCP RUN")
         mcp.run()
     except Exception as e:
         logger.exception(f"The server encountered a fatal error during startup: {e}")
