@@ -4,7 +4,7 @@ description: Manages Anki flashcards via AnkiConnect - adds flashcards from CSV 
 ---
 
 #  Slopcard2Anki - Anki Flashcard Manager
-This skill allows Claude/Gemini to read local files, distill them into high-quality flashcards, and sync them to Anki via a local `main.py` script.
+This skill allows Claude/Gemini to read local files, distill them into high-quality flashcards, and sync them to Anki via a local `skill/main.py` script.
 
 ## Operational Environment
 This skill operates exclusively in a **local execution context**. It requires access to the host machine's filesystem to read/write CSV files and access to `localhost:8765` to communicate with AnkiConnect. If you are being executed in a cloud-hosted web sandbox (e.g., a browser-based chat interface), notify the user that you cannot reach their local Anki instance and recommend using a local CLI-based agent instead.
@@ -12,7 +12,7 @@ This skill operates exclusively in a **local execution context**. It requires ac
 ## Prerequisites
 Ensure the environment has the necessary dependencies:
 ```shell
-pip install requests psutil
+python -m pip install requests psutil
 ```
 
 ## Card Creation Principles
@@ -59,7 +59,7 @@ When a user provides a file or text and asks for "flashcards", follow these step
 2. **Extract:** extract concepts suitable for Spaced Repetition.
 3. **Sanitize**: apply the [[Data Sanization]] rules above
 3. **Generate CSV:** Create a temporary file (e.g., `tmp_cards.csv`) using the format defined below.
-4. **Execute:** Run `python3 main.py --f tmp_cards.csv --deck_name "Target Deck"`.
+4. **Execute:** Run `python -m skill.main --f tmp_cards.csv --deck_name "Target Deck"`.
 5. **Clean up:** Delete the temporary CSV file after a successful run.
 
 **Constraint**: if generating <100 cards, **do not** write a Python script to build the CSV; directly output the raw CSV data to a file.
@@ -67,14 +67,14 @@ When a user provides a file or text and asks for "flashcards", follow these step
 ### Workflow 2 - Import
 To import an **existing** CSV file:
 ```shell
-main.py --f file_name.csv --deck_name "Deck Name"
+python -m skill.main --f file_name.csv --deck_name "Deck Name"
 ```
 *Note:* if no deck name is provided, prompt the user for one. Never assume the deck name.
 
 ## Workflow 3 - Search & Discovery
 To find a flashcard by keyword:
-```
-main.py --find_note "search term"
+```shell
+python -m skill.main --find_note "search term"
 ```
 
 Returns:
@@ -85,21 +85,21 @@ Returns:
 If multiple flashcards match, review the returned text to identify the correct flashcard.
 
 ### Workflow 4: Update Flashcards
-1. **Search**: find the ID via `main.py --find_note` follow instruction from [[Workflow 3 - Search & Discovery]]
+1. **Search**: find the ID via `python -m skill.main --find_note` follow instruction from [[Workflow 3 - Search & Discovery]]
 2. Review the return back text and improve it by adding additional context
     - You may ask the user for a file where to look for additional context
 3. **Update**: 
 ```shell
-main.py --update_note_by_id CARD_ID --new_front_text "New front" --new_back_text "New back"
+python -m skill.main --update_note_by_id CARD_ID --new_front_text "New front" --new_back_text "New back"
 ```
 
-*Note* you can also include only one of the back/front arguments e.g. to update only back: `main.py --update_note_by_id CARD_ID --new_back_text "Better back text"`
+*Note* you can also include only one of the back/front arguments e.g. to update only back: `python -m skill.main --update_note_by_id CARD_ID --new_back_text "Better back text"`
 
 ## Troubleshooting
 Always notify the user of any error you encounter.
 
 **If Anki is not reachable/running**
-1. Attempt auto-launch with this exact command: `main.py --try_launch_anki`
+1. Attempt auto-launch with this command: `python -m skill.main --try_launch_anki`
 2. If auto-launch fails, notice the user and ask him to start Anki.
 
 **If flashcard not found**
@@ -108,7 +108,7 @@ Always notify the user of any error you encounter.
 - Ask the user for what to do
 
 **On Windows:**
-Default to `python3 main.py` if the standard `python main.py` fails.
+If the standard `python -m skill.main` fails, ensure your environment is set up correctly for `src` to be in your PYTHONPATH, or run it from the project root.
 
 ---
 

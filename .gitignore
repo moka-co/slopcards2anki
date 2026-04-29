@@ -1,6 +1,13 @@
 # Ignore .csv files used for test
 *.csv
 
+# Ignore .gemini and .claude folders
+.gemini
+.claude 
+
+#  Ignore uv.lock
+uv.lock
+
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

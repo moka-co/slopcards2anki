@@ -10,6 +10,7 @@
 - **Automatic Upload & Sync**: automatically breaks down complex notes into single-fact "atmoic" cards for maximum retention
 - **LaTeX Support & STEM Ready**: Full support for inline `$math$` and block `$$math$$` notation, preserved perfectly for Anki's rendering engine
 - **Smart Cloze Deletion**: Identifies definitions and sequences to generate cloze card dynamically
+- **Supports both skill and MCP server**
 
 > [!IMPORTANT]
 > This is a **local AI skill**. It is designed to run in environments where the AI has access to your local machine:
@@ -23,23 +24,46 @@
 - [AnkiConnect](https://ankiweb.net/shared/info/2055492159) Add on: Install code `2055492159` in anki (Tools > Add-ons > Get Add-ons)
 
 ### 2. Installation
-Clone this repository into your AI tool's designed skills directory (e.g., `~/.skills/` or within your project root)
 
-```bash
+#### As Skill (Suggested)
+Instructions for Gemini
+```
 git clone https://github.com/moka-co/slopcards2anki.git
+cd slopcard2anki
+gemini skill link $PWD
 ```
 
+
+#### As MCP
+Instruction for Gemini (claude follows the same pattern):
+
+Powershell:
+```shell
+git clone https://github.com/moka-co/slopcards2anki.git
+cd slopcard2anki
+gemini mcp add slopcards2anki "python3 -m uv run --project $PWD python -m mcp_server.mcp_server"       
+```
+
+Linux:
+```bash
+git clone https://github.com/moka-co/slopcards2anki.git
+cd slopcard2anki
+gemini mcp add slopcards2anki "python -m uv run --project $PWD python -m mcp_server.mcp_server"  
+```
+
+
 ### 3. Usage
-Once the skill is registered with your AI CLI (Claude Code, Gemini CLI, etc.), you can use **natural language** to manage your deck.
+Once registered, you can use **natural language** to automatically upload flashcards. 
 
 **Example Prompts**:
 - "Convert my 'Calculus_Notes.md' into 30 atomic flashcards using slopcards-to-anki"
 - "Find the Anki card about "Photosynthetis" and update the back with more detail from this paragraph."
 
+If you installed the MCP server, type `/mcp` in your CLI to see available tools.
 
 ## 🏗️ How it works
-1. The AI (e.g. Claude Code / Gemini CLI) analyzes your text and identifies high-value concepts
-2. Then the AI calls a python interface that sanitizes data and pushes the cards into your local Anki profile
+1. The AI (e.g. Claude Code / Gemini CLI) analyzes your notes and identifies high-value concepts
+2. The the AI calls the `main.py` or `mcp_server` tools to create or update cards to your local Anki profile
 
 ## ⚠️ Scope & Roadmap
 - **Text & Math Focused**: currently optimized for text and LaTeX formulas.

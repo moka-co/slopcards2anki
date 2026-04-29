@@ -1,5 +1,17 @@
-[tool.ruff]
+[project]
+name = "slopcards2anki"
+version = "0.1.0"
+description = "A tool to sync CSV notes to Anki via AnkiConnect"
+dependencies = [
+    "requests",
+    "psutil",
+    "fastmcp",
+]
 
+[tool.uv]
+managed=true
+
+[tool.ruff]
 # Set maximum line length
 line-length = 88
 
