@@ -1,14 +1,25 @@
 from fastmcp import FastMCP
 from src import decks, notes
 from src.utils import check_anki
+from pathlib import Path
 import logging
+import sys 
 
 # Initialize FastMCP server
-mcp = FastMCP("SlopCards2Anki")
+mcp = FastMCP("slopcards2anki")
 
 # Configure logging to not interfere with stdio transport
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger("mcp_server")
+logging.basicConfig(
+    stream=sys.stderr,
+    level=logging.DEBUG,
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+    filename="./mcp_debug.log",
+    filemode="a",
+)
+logger = logging.getLogger(__name__)
+
+# Ensure the file is writable
+logger.info("MCP Server started and logging initialized.")
 
 
 @mcp.tool()
@@ -25,7 +36,7 @@ def create_anki_deck(name: str) -> str:
     """Create a new Anki deck with the given name."""
     result = decks.create_deck(name)
     if result:
-        return result 
+        return result
     return "Error when creating deck name"
 
 
@@ -62,5 +73,20 @@ def get_anki_status() -> str:
     return f"Anki Running: {running}\nAnkiConnect Active: {connected}"
 
 
+"""
+# Expose SKILL.MD
+@mcp.resource(uri="file://SKILL.MD")
+def get_skill() -> str:
+    path = Path(f"./SKILL.MD")
+    if not path.exists():
+        raise FileNotFoundError(f"File SKILL.MD not found")
+    return path.read_text()
+"""
+
+
 if __name__ == "__main__":
-    mcp.run()
+    try:
+        mcp.run()
+    except Exception as e:
+        logger.exception(f"The server encountered a fatal error during startup: {e}")
+        raise
