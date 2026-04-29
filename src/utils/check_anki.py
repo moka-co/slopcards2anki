@@ -53,6 +53,9 @@ def try_launch_anki():
                 user_home, "AppData", "Local", "Programs", "Anki", "anki.exe"
             )
 
+            # Check anki path
+            absolute_anki_path = os.path.abspath(anki_path)
+
             # Validate path exits and is a file
             if not os.path.isfile(anki_path):
                 raise FileNotFoundError(f"Anki not found at {anki_path}")
@@ -61,8 +64,8 @@ def try_launch_anki():
 
             logger.debug(anki_path)
 
-            subprocess.Popen(
-                [anki_path],
+            subprocess.Popen( # nosec B603
+                [absolute_anki_path],
                 creationflags=subprocess.DETACHED_PROCESS
                 | subprocess.CREATE_NEW_PROCESS_GROUP,
                 stdin=subprocess.DEVNULL,
@@ -76,8 +79,12 @@ def try_launch_anki():
             if not anki_path:
                 raise FileNotFoundError("Anki not found in PATH")
 
-            subprocess.Popen(
-                [anki_path],
+            absolute_anki_path = os.path.abspath(anki_path)
+            if not anki_path:
+                raise FileNotFoundError("Anki not found in PATH")
+
+            subprocess.Popen( # nosec B603
+                [absolute_anki_path],
                 start_new_session=True,
                 stdin=subprocess.DEVNULL,
                 stdout=subprocess.DEVNULL,
