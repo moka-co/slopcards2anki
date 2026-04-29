@@ -2,6 +2,7 @@
 name = "slopcards2anki"
 version = "0.1.0"
 description = "A tool to sync CSV notes to Anki via AnkiConnect"
+requires-python = ">=3.12" 
 dependencies = [
     "requests",
     "psutil",
