@@ -153,7 +153,14 @@ def get_image_path(text : str) -> str | None:
 
     if match:
         full_match = match.group(0)
-        return full_match.strip("[").strip("]")
+        return full_match.strip('[').strip(']')
 
     return None
+
+
+# Remove any leading/trailing whitespace first
+def remove_wrapping_quotes(text):
+    if text[0] == '"' and text[-1] == '"':
+        return text[1:-1]
+    return text
 

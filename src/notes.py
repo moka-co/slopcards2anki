@@ -3,7 +3,7 @@ import re
 import logging
 import csv
 import os
-from src.note_utils import NoteBuilder,ImageNoteBuilder, fix_formatting, get_image_path
+from src.note_utils import NoteBuilder,ImageNoteBuilder, fix_formatting, get_image_path, remove_wrapping_quotes
 
 ENDPOINT = "http://127.0.0.1:8765"  # AnkiConnect works only locally
 
@@ -68,7 +68,7 @@ def add_note(deck_name, model_name, front_content, back_content):
     # print(f"Deck Name: {deck_name}\n Model Name: {model_name}\n Front Content: {front_content}\n Back Content: {back_content}")
 
     front_content = fix_formatting(front_content) + "<br>"
-    back_content = fix_formatting(back_content)
+    back_content = remove_wrapping_quotes(fix_formatting(back_content))
 
     image_path_front = get_image_path(front_content)
     image_path_back = get_image_path(back_content)
