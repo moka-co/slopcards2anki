@@ -92,32 +92,30 @@ def add_note(deck_name, model_name, front_content, back_content):
 
     # Add the correct field for the correct note type 
     # e.g. image_path_front for a Cloze note should be "Text"
-    if "Text" in payload_image_fields or "Front" in payload_image_fields:
-        assert isinstance(payload_builder, ImageNoteBuilder)
-        assert isinstance(image_path_front, str)
-        filename = os.path.basename(image_path_front)
-        payload_builder.add_picture(image_path_front, filename, payload_image_fields)
+    if isinstance(payload_builder, ImageNoteBuilder):
+        if isinstance(image_path_front, str) and ("Text" in payload_image_fields or "Front" in payload_image_fields):
+            filename = os.path.basename(image_path_front)
+            payload_builder.add_picture(image_path_front, filename, payload_image_fields)
 
-        # Remove the image placeholder from the content to avoid duplication
-        if "Text" in payload_image_fields:
-            front_content = front_content.replace(f"[{image_path_front}]", "")
-            payload_builder.add_field("Text", front_content)
+            # Remove the image placeholder from the content to avoid duplication
+            if "Text" in payload_image_fields:
+                front_content = front_content.replace(f"[{image_path_front}]", "")
+                payload_builder.add_field("Text", front_content)
+            else:
+                front_content = front_content.replace(f"[{image_path_front}]", "")
+                payload_builder.add_field("Front", front_content)
         else:
-            front_content = front_content.replace(f"[{image_path_front}]", "")
-            payload_builder.add_field("Front", front_content)
-    else:
-        assert isinstance(payload_builder, ImageNoteBuilder)
-        assert isinstance(image_path_back, str)
-        filename = os.path.basename(image_path_back)
-        payload_builder.add_picture(image_path_back, filename, payload_image_fields)
+            if isinstance(image_path_back, str):
+                filename = os.path.basename(image_path_back)
+                payload_builder.add_picture(image_path_back, filename, payload_image_fields)
 
-        # Remove the image placeholder from the content to avoid duplication
-        if "Back Extra" in payload_image_fields:
-            back_content = back_content.replace(f"[{image_path_back}]", "")
-            payload_builder.add_field("Back Extra", back_content)
-        else:
-            back_content = back_content.replace(f"[{image_path_back}]", "")
-            payload_builder.add_field("Back", back_content)
+                # Remove the image placeholder from the content to avoid duplication
+                if "Back Extra" in payload_image_fields:
+                    back_content = back_content.replace(f"[{image_path_back}]", "")
+                    payload_builder.add_field("Back Extra", back_content)
+                else:
+                    back_content = back_content.replace(f"[{image_path_back}]", "")
+                    payload_builder.add_field("Back", back_content)
 
 
     payload = payload_builder.build()

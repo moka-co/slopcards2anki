@@ -50,8 +50,8 @@ When generating CSV files for `add_cards_from_csv`:
 - **Escaping**: escape double quotes by doubling them ("").
 - **Newlines**: replace internal newlines with <br>
 - **LaTeX**: ensure LaTeX backslashes (\\) are preserved and not treated as escape characters by the CLI.
-- **Images in flashcards**: include in the flashcard the path to the file enclosed with "[]" like in the markdown file
-- **Images path resolution**: always resolve image paths relative to your **working directory**, not relative to the source file. *Example* a note at `University/AI/Seach In Complex Environments` references image `../../Attachments/image1.png`. From your working directory, the correct may be `Attachments/image1.png` and the flashcard should contain `[Attachments/image1.png]`
+- **Images in flashcards**: include in the flashcard the path to the file enclosed with "[]" like in the markdown file. Copy all the images in the same folder where you saved the CSV file.
+- **Images path resolution**: always resolve image paths relative to your **working directory** i.e. the folder where you saved the images, not relative to the source file. *Example* a note at `University/AI/Seach In Complex Environments` references image `../../Attachments/image1.png`. From your working directory, the correct may be `image1.png` and the flashcard should contain `[image1.png]`
 - **Missing images**: if an image path cannot be resolved or the file does not exist, skip it and remove that flashcard.
 - **Supported image formats**: only embed images with the following extensions: `.png`, `.jpg`, `.jpeg`, `.gif`, `.webp`. If an image has unsupported format skip it and remove the flashcard.
 
