@@ -137,7 +137,7 @@ def add_notes_from_csv_file(file_name, deck_name):
         # Iterate over each row in the file
         for row in reader:
             front_content = row[0]
-            back_content = row[1]
+            back_content = row[1] if len(row)>1 else ""
 
             # Dynamically adapt the model_name
             pattern = r"c1::*"
