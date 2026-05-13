@@ -67,8 +67,7 @@ If you installed the MCP server, type `/mcp` in your CLI to see available tools.
 
 ## ⚠️ Scope & Roadmap
 - **Text & Math Focused**: currently optimized for text and LaTeX formulas.
-- **Media Support**: Image and audio uploads are not currently supported (help is appreciated).
-- **Format**: It has been tested with Markdown files, but it works with any file format that AI is capable of reading. However to get better result you may first want to use tools like [markitdown](https://github.com/microsoft/markitdown)
+- **Media Support**: Audio uploads are not currently supported (help is appreciated).
+- **Format**: it works better with markdown files, however as long as you're using a multimodal model e.g. Gemini 3.1 it works too with PDFs. You may want to try tools like [markitdown](https://github.com/microsoft/markitdown)
 
 
-## 🛠 Troubleshooting

@@ -1,4 +1,5 @@
 import re
+import os
 from dataclasses import dataclass, field
 
 
@@ -96,10 +97,63 @@ class NoteBuilder:
         }
 
 
+@dataclass
+class ImageNoteBuilder(NoteBuilder):
+    """
+    Extended builder that supports adding picture attachments to Anki notes.
+    """
+    _picture: list = field(default_factory=list)
+    
+    def add_picture(self, file_path: str, filename: str, fields: list|None) -> "ImageNoteBuilder":
+        """
+        Adds a local picture attachment to the note.
+        
+        Args:
+            file_path: Absolute path to the file on the local system.
+            filename: The name the file will have in Anki's media folder.
+            fields: A list of field names where the image should be displayed.
+        """
+        if not os.path.isabs(file_path): # Enforce absolute paths
+            file_path = os.path.abspath(file_path)
+
+        self._picture.append({
+            "path": file_path,
+            "filename": filename,
+            "fields": fields
+        })
+        return self
+
+    def build(self) -> dict:
+        """
+        Builds the payload and injects the picture data into the 'note' section.
+        """
+        # Get the base payload from the parent class
+        payload = super().build()
+        
+        # Inject picture data if any exists
+        if self._picture:
+            payload["params"]["note"]["picture"] = self._picture
+            
+        return payload
+
+
 # These notes comes from obsidian where bold formatting is done with "**" around words"
 # However, Anki wants a different format i.e. <b>word</b>
 # A similar issue with Latex
 def fix_formatting(text):
     text = re.sub(r"\*\*(.*?)\*\*", r"<b>\1</b>", text)
+    text = re.sub(r"\*(.*?)\*", r"<i>\1</i>", text)
     result = re.sub(r"\$(.*?)\$", r"\(\1\)", text)
     return result
+
+def get_image_path(text : str) -> str | None:
+    pattern = r"\[.*?\.(?:png|jpg|jpeg|gif|webp)\]"
+
+    match = re.search(pattern, text, re.IGNORECASE)
+
+    if match:
+        full_match = match.group(0)
+        return full_match.strip("[").strip("]")
+
+    return None
+

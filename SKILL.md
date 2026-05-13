@@ -41,14 +41,19 @@ To ensure high-quality cards, follow these rules when generating content:
    - Card A: Name/Concept -> Formula
    - Card B: Formula -> Concept/Variable definitions.
 - **Contextual Wikilinks**: If a markdown file contains [[wikilinks]], generate at least one question that references the linked concept (reading the linked file if available)
+- **Images**: If the source file contains images, analyze each one and make sure to include them into flashcards. Flashcards with images are high quality flashcards. Only include images that are actually present and readable in the source file. For the correct path and syntax, follow the rules in the [Data Sanitization](#data-sanitization) section below.
 - **Output:** Write the flashcards into a temporary .csv file under `.tmp/` directory e.g. `./tmp/tmp_flashcards.csv`.
 
-## Data Sanization
+## Data Sanitization
 When generating CSV files for `add_cards_from_csv`:
 - **No Headers**: do **not** include "Front, Back" headers rows in the CSV
 - **Escaping**: escape double quotes by doubling them ("").
 - **Newlines**: replace internal newlines with <br>
 - **LaTeX**: ensure LaTeX backslashes (\\) are preserved and not treated as escape characters by the CLI.
+- **Images in flashcards**: include in the flashcard the path to the file enclosed with "[]" like in the markdown file
+- **Images path resolution**: always resolve image paths relative to your **working directory**, not relative to the source file. *Example* a note at `University/AI/Seach In Complex Environments` references image `../../Attachments/image1.png`. From your working directory, the correct may be `Attachments/image1.png` and the flashcard should contain `[Attachments/image1.png]`
+- **Missing images**: if an image path cannot be resolved or the file does not exist, skip it and remove that flashcard.
+- **Supported image formats**: only embed images with the following extensions: `.png`, `.jpg`, `.jpeg`, `.gif`, `.webp`. If an image has unsupported format skip it and remove the flashcard.
 
 ## CSV Format Required
 The `main.py` script expects a standard CSV with a header row. Use this structure:
