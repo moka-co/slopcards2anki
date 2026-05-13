@@ -20,7 +20,7 @@ When accessed as an MCP server, use these tools directly:
 ## Operational Environment
 This skill operates exclusively in a **local execution context**. It requires access to the host machine's filesystem to read/write CSV files and access to `localhost:8765` to communicate with AnkiConnect. If you are being executed in a cloud-hosted web sandbox (e.g., a browser-based chat interface), notify the user that you cannot reach their local Anki instance and recommend using a local CLI-based agent instead.
 
-**Assume** anki is already running, use `--try_launch_anki` only if you encounter errors.
+**Assume Anki is already running**. Do NOT call `--try_launch_anki proactively` or as a first step. It is a last-resort fallback — only invoke it after a real connection error occurs during an actual operation [Troubleshot](#troubleshooting)
 
 
 ## Prerequisites
@@ -117,9 +117,12 @@ python -m skill.main --update_note_by_id CARD_ID --new_front_text "New front" --
 ## Troubleshooting
 Always notify the user of any error you encounter.
 
-**If Anki is not reachable/running**
-1. Attempt auto-launch with this command: `python -m skill.main --try_launch_anki`
-2. If auto-launch fails, notice the user and ask him to start Anki.
+**If a command fails with a connection error (Anki not reachable)**:
+1. Confirm the error is genuinely a connection failure, not a malformed command or CSV issue.
+2. Only then attempt auto-launch as a fallback:
+`python -m skill.main --try_launch_anki`
+3. If auto-launch succeeds, retry the original command.
+4. If auto-launch also fails, notify the user and ask them to start Anki manually, then retry.
 
 **If flashcard not found**
 - Try broader search terms
@@ -130,5 +133,3 @@ Always notify the user of any error you encounter.
 If the standard `python -m skill.main` fails, ensure your environment is set up correctly for `src` to be in your PYTHONPATH, or run it from the project root.
 
 ---
-
-**Important**: always report the tool output to the user to confirm the action was successful
