@@ -77,9 +77,10 @@ When a user provides a file or text and asks for "flashcards", follow these step
 1. **Analyze:** Read the source file/text provided by the user.
 2. **Extract:** extract concepts suitable for Spaced Repetition.
 3. **Sanitize**: apply the [[Data Sanization]] rules above
-3. **Generate CSV:** Create a temporary file (e.g., `tmp_cards.csv`) using the format defined below.
-4. **Execute:** Run `python -m skill.main --f tmp_cards.csv --deck_name "Target Deck"`.
-5. **Clean up:** Delete the temporary CSV file after a successful run.
+4. **Generate CSV:** Create a temporary file (e.g., `tmp_cards.csv`) using the format defined below.
+5. **Execute:** Run `python -m skill.main --f tmp_cards.csv --deck_name "Target Deck"`.
+6. **Clean up:** Delete the temporary CSV file after a successful run.
+7. **Stop**:  report the result to the user and wait for futher instructions. Do NOT run any additional commands. 
 
 **Constraint**: if generating <100 cards, **do not** write a Python script to build the CSV; directly output the raw CSV data to a file.
 
@@ -89,8 +90,9 @@ To import an **existing** CSV file:
 python -m skill.main --f file_name.csv --deck_name "Deck Name"
 ```
 *Note:* if no deck name is provided, prompt the user for one. Never assume the deck name.
+After a successful import, report the result and **stop**.
 
-## Workflow 3 - Search & Discovery
+## Workflow 3 - Query for cards
 To find a flashcard by keyword:
 ```shell
 python -m skill.main --find_note "search term"
@@ -104,7 +106,7 @@ Returns:
 If multiple flashcards match, review the returned text to identify the correct flashcard.
 
 ### Workflow 4: Update Flashcards
-1. **Search**: find the ID via `python -m skill.main --find_note` follow instruction from [[Workflow 3 - Search & Discovery]]
+1. **Search**: find the ID via `python -m skill.main --find_note` follow instruction from [Workflow 3](#workflow-3---search--discovery)
 2. Review the return back text and improve it by adding additional context
     - You may ask the user for a file where to look for additional context
 3. **Update**: 
