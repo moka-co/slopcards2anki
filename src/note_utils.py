@@ -162,6 +162,9 @@ def get_image_path(text: str) -> str | None:
 
 # Remove any leading/trailing whitespace first
 def remove_wrapping_quotes(text):
-    if text[0] == '"' and text[-1] == '"':
-        return text[1:-1]
+    text = text.strip()
+    if not text:
+        return text
+    if (text[0] == '"' and text[-1] == '"') or (text[0] == "'" and text[-1] == "'"):
+        return text[1:-1].strip()
     return text
