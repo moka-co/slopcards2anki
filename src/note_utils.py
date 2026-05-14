@@ -102,25 +102,26 @@ class ImageNoteBuilder(NoteBuilder):
     """
     Extended builder that supports adding picture attachments to Anki notes.
     """
+
     _picture: list = field(default_factory=list)
-    
-    def add_picture(self, file_path: str, filename: str, fields: list|None) -> "ImageNoteBuilder":
+
+    def add_picture(
+        self, file_path: str, filename: str, fields: list | None
+    ) -> "ImageNoteBuilder":
         """
         Adds a local picture attachment to the note.
-        
+
         Args:
             file_path: Absolute path to the file on the local system.
             filename: The name the file will have in Anki's media folder.
             fields: A list of field names where the image should be displayed.
         """
-        if not os.path.isabs(file_path): # Enforce absolute paths
+        if not os.path.isabs(file_path):  # Enforce absolute paths
             file_path = os.path.abspath(file_path)
 
-        self._picture.append({
-            "path": file_path,
-            "filename": filename,
-            "fields": fields
-        })
+        self._picture.append(
+            {"path": file_path, "filename": filename, "fields": fields}
+        )
         return self
 
     def build(self) -> dict:
@@ -129,11 +130,11 @@ class ImageNoteBuilder(NoteBuilder):
         """
         # Get the base payload from the parent class
         payload = super().build()
-        
+
         # Inject picture data if any exists
         if self._picture:
             payload["params"]["note"]["picture"] = self._picture
-            
+
         return payload
 
 
@@ -146,14 +147,15 @@ def fix_formatting(text):
     result = re.sub(r"\$(.*?)\$", r"\(\1\)", text)
     return result
 
-def get_image_path(text : str) -> str | None:
+
+def get_image_path(text: str) -> str | None:
     pattern = r"\[.*?\.(?:png|jpg|jpeg|gif|webp)\]"
 
     match = re.search(pattern, text, re.IGNORECASE)
 
     if match:
         full_match = match.group(0)
-        return full_match.strip('[').strip(']')
+        return full_match.strip("[").strip("]")
 
     return None
 
@@ -163,4 +165,3 @@ def remove_wrapping_quotes(text):
     if text[0] == '"' and text[-1] == '"':
         return text[1:-1]
     return text
-

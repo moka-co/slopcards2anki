@@ -64,7 +64,7 @@ def try_launch_anki():
 
             logger.debug(anki_path)
 
-            subprocess.Popen( # nosec B603
+            subprocess.Popen(  # nosec B603
                 [absolute_anki_path],
                 creationflags=subprocess.DETACHED_PROCESS
                 | subprocess.CREATE_NEW_PROCESS_GROUP,
@@ -83,7 +83,7 @@ def try_launch_anki():
             if not anki_path:
                 raise FileNotFoundError("Anki not found in PATH")
 
-            subprocess.Popen( # nosec B603
+            subprocess.Popen(  # nosec B603
                 [absolute_anki_path],
                 start_new_session=True,
                 stdin=subprocess.DEVNULL,

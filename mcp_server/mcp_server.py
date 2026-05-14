@@ -37,7 +37,7 @@ def create_anki_deck(name: str) -> str:
     """Create a new Anki deck with the given name."""
     result = decks.create_deck(name)
     if result:
-        return result
+        return str(result)
     return "Error when creating deck name"
 
 

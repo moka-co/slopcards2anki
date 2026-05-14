@@ -3,7 +3,13 @@ import re
 import logging
 import csv
 import os
-from src.note_utils import NoteBuilder,ImageNoteBuilder, fix_formatting, get_image_path, remove_wrapping_quotes
+from src.note_utils import (
+    NoteBuilder,
+    ImageNoteBuilder,
+    fix_formatting,
+    get_image_path,
+    remove_wrapping_quotes,
+)
 
 ENDPOINT = "http://127.0.0.1:8765"  # AnkiConnect works only locally
 
@@ -74,12 +80,12 @@ def add_note(deck_name, model_name, front_content, back_content):
     image_path_back = get_image_path(back_content)
 
     # Check if it's a note with image or not
-    expression = image_path_front != None or image_path_back != None
-    if expression == True:
+    expression = image_path_front is not None or image_path_back is not None
+    if expression:
         payload_builder = ImageNoteBuilder().deck(deck_name)
     else:
         payload_builder = NoteBuilder().deck(deck_name)
-    
+
     payload_image_fields = None
 
     # Check if it's a Cloze or Basic note
@@ -90,12 +96,16 @@ def add_note(deck_name, model_name, front_content, back_content):
         payload_builder = payload_builder.basic(front_content, back_content)
         payload_image_fields = ["Front" if image_path_front else "Back"]
 
-    # Add the correct field for the correct note type 
+    # Add the correct field for the correct note type
     # e.g. image_path_front for a Cloze note should be "Text"
     if isinstance(payload_builder, ImageNoteBuilder):
-        if isinstance(image_path_front, str) and ("Text" in payload_image_fields or "Front" in payload_image_fields):
+        if isinstance(image_path_front, str) and (
+            "Text" in payload_image_fields or "Front" in payload_image_fields
+        ):
             filename = os.path.basename(image_path_front)
-            payload_builder.add_picture(image_path_front, filename, payload_image_fields)
+            payload_builder.add_picture(
+                image_path_front, filename, payload_image_fields
+            )
 
             # Remove the image placeholder from the content to avoid duplication
             if "Text" in payload_image_fields:
@@ -107,7 +117,9 @@ def add_note(deck_name, model_name, front_content, back_content):
         else:
             if isinstance(image_path_back, str):
                 filename = os.path.basename(image_path_back)
-                payload_builder.add_picture(image_path_back, filename, payload_image_fields)
+                payload_builder.add_picture(
+                    image_path_back, filename, payload_image_fields
+                )
 
                 # Remove the image placeholder from the content to avoid duplication
                 if "Back Extra" in payload_image_fields:
@@ -116,7 +128,6 @@ def add_note(deck_name, model_name, front_content, back_content):
                 else:
                     back_content = back_content.replace(f"[{image_path_back}]", "")
                     payload_builder.add_field("Back", back_content)
-
 
     payload = payload_builder.build()
 
@@ -137,7 +148,7 @@ def add_notes_from_csv_file(file_name, deck_name):
         # Iterate over each row in the file
         for row in reader:
             front_content = row[0]
-            back_content = row[1] if len(row)>1 else ""
+            back_content = row[1] if len(row) > 1 else ""
 
             # Dynamically adapt the model_name
             pattern = r"c1::*"
@@ -162,7 +173,7 @@ def update_note(
     if not note_info:
         logger.error(f"Could not find note info for id {note_id}")
         return None
-    
+
     model_name = note_info[0].get("modelName", "Basic")
 
     # Construct the fields dynamically based on the model

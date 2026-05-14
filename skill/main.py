@@ -62,7 +62,9 @@ def main() -> int:
             card_id = card_ids[0]
             logger.info(f"Returned card with id: {card_id}")
         else:
-            logger.info(f"No cards found, try with another query")
+            logger.info(
+                f"No cards found with query {args.find_note} try with another query"
+            )
     elif args.get_note_by_id:
         ids = list()
         ids.append(int(args.get_note_by_id))
