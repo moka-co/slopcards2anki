@@ -6,7 +6,7 @@ import logging
 
 # Logger
 logging.basicConfig(
-    level=logging.DEBUG, format="%(asctime)s [%(levelname)s] %(name)s - %(message)s"
+    level=logging.INFO, format="%(asctime)s [%(levelname)s] %(name)s - %(message)s"
 )
 
 logger = logging.getLogger(__name__)
@@ -50,16 +50,19 @@ def main() -> int:
     args = parser.parse_args()
     if args.create_deck:
         result = decks.create_deck(args.create_deck)
-        logger.debug(result)
+        if result:
+            logger.info(f"Sucessfully created deck {args.create_deck}")
     elif args.list_decks:
         list_decks = decks.get_deck_names_and_ids()
         if list_decks is not None:
-            logger.info(list(list_decks))
+            logger.info(f"Find the following decks:\n {list(list_decks)}")
     elif args.find_note:
         card_ids = notes.get_cards_id_by_query(args.find_note)
         if card_ids is not None and len(card_ids) != 0:
             card_id = card_ids[0]
-            print(card_id)
+            logger.info(f"Returned card with id: {card_id}")
+        else:
+            logger.info(f"No cards found, try with another query")
     elif args.get_note_by_id:
         ids = list()
         ids.append(int(args.get_note_by_id))
@@ -77,6 +80,7 @@ def main() -> int:
         notes.update_note(ids[0], front=args.new_front_text, back=args.new_back_text)
     elif args.f and args.deck_name:
         notes.add_notes_from_csv_file(args.f, args.deck_name)
+        logger.info(f"Added flashcards from filename {args.f} to deck {args.deck_name}")
     elif args.check_anki:
         # Check if Anki is Running
         if check_anki.is_anki_running():

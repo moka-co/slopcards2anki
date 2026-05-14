@@ -24,14 +24,14 @@ def get_deck_names_and_ids() -> str | None:
 
 # Connect to AnkiConnect API and submit a payload that create a new deck
 # Requires a deck name in input
-def create_deck(deck_name: str) -> str | None:
+def create_deck(deck_name: str) -> bool:
     payload = {"action": "createDeck", "version": 6, "params": {"deck": deck_name}}
 
     response = requests.post(ENDPOINT, json=payload, timeout=(5, 30))
     if response.status_code:  # OK
         body = response.json()
         result = body["result"]
-        return result
+        return True
     else:
-        print(f"Request returned status code {response.status_code}")
-        return None
+        logger.error(f"Request returned status code {response.status_code}")
+        return False
