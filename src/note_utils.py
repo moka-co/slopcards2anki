@@ -138,6 +138,68 @@ class ImageNoteBuilder(NoteBuilder):
         return payload
 
 
+# Take in input a deck name (required by any NoteBuilder class)
+# - the front_content and the back content of the note
+# - The model name of the card i.e. cloze vs text
+# Accordingly to the input parameters return in output the appropriate NoteBuilder implementation
+def note_builder_factory(
+    deck_name: str, front_content: str, back_content: str, model_name: str
+) -> NoteBuilder | ImageNoteBuilder:
+    image_path_front = get_image_path(front_content)
+    image_path_back = get_image_path(back_content)
+
+    expression = image_path_front is not None or image_path_back is not None
+    if expression:
+        payload_builder = ImageNoteBuilder().deck(deck_name)
+    else:
+        payload_builder = NoteBuilder().deck(deck_name)
+
+    payload_image_fields = None
+
+    # Check if it's a Cloze or Basic note
+    if model_name == "Cloze":
+        payload_builder = payload_builder.cloze(front_content, back_content)
+        payload_image_fields = ["Text" if image_path_front else "Back Extra"]
+    else:
+        payload_builder = payload_builder.basic(front_content, back_content)
+        payload_image_fields = ["Front" if image_path_front else "Back"]
+
+    # Add the correct field for the correct note type
+    # e.g. image_path_front for a Cloze note should be "Text"
+    if isinstance(payload_builder, ImageNoteBuilder):
+        if isinstance(image_path_front, str) and (
+            "Text" in payload_image_fields or "Front" in payload_image_fields
+        ):
+            filename = os.path.basename(image_path_front)
+            payload_builder.add_picture(
+                image_path_front, filename, payload_image_fields
+            )
+
+            # Remove the image placeholder from the content to avoid duplication
+            if "Text" in payload_image_fields:
+                front_content = front_content.replace(f"[{image_path_front}]", "")
+                payload_builder.add_field("Text", front_content)
+            else:
+                front_content = front_content.replace(f"[{image_path_front}]", "")
+                payload_builder.add_field("Front", front_content)
+        else:
+            if isinstance(image_path_back, str):
+                filename = os.path.basename(image_path_back)
+                payload_builder.add_picture(
+                    image_path_back, filename, payload_image_fields
+                )
+
+                # Remove the image placeholder from the content to avoid duplication
+                if "Back Extra" in payload_image_fields:
+                    back_content = back_content.replace(f"[{image_path_back}]", "")
+                    payload_builder.add_field("Back Extra", back_content)
+                else:
+                    back_content = back_content.replace(f"[{image_path_back}]", "")
+                    payload_builder.add_field("Back", back_content)
+
+    return payload_builder
+
+
 # These notes comes from obsidian where bold formatting is done with "**" around words"
 # However, Anki wants a different format i.e. <b>word</b>
 # A similar issue with Latex

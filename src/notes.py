@@ -2,14 +2,7 @@ import requests
 import re
 import logging
 import csv
-import os
-from src.note_utils import (
-    NoteBuilder,
-    ImageNoteBuilder,
-    fix_formatting,
-    get_image_path,
-    remove_wrapping_quotes,
-)
+from src.note_utils import fix_formatting, remove_wrapping_quotes, note_builder_factory
 
 ENDPOINT = "http://127.0.0.1:8765"  # AnkiConnect works only locally
 
@@ -73,62 +66,17 @@ def get_notes_info_by_id(note_ids: list) -> list | None:
 def add_note(deck_name, model_name, front_content, back_content):
     # print(f"Deck Name: {deck_name}\n Model Name: {model_name}\n Front Content: {front_content}\n Back Content: {back_content}")
 
+    # add break row for clarity
     front_content = fix_formatting(front_content) + "<br>"
+    # fix formatting and remove wrapping quotes
     back_content = remove_wrapping_quotes(fix_formatting(back_content))
 
-    image_path_front = get_image_path(front_content)
-    image_path_back = get_image_path(back_content)
-
-    # Check if it's a note with image or not
-    expression = image_path_front is not None or image_path_back is not None
-    if expression:
-        payload_builder = ImageNoteBuilder().deck(deck_name)
-    else:
-        payload_builder = NoteBuilder().deck(deck_name)
-
-    payload_image_fields = None
-
-    # Check if it's a Cloze or Basic note
-    if model_name == "Cloze":
-        payload_builder = payload_builder.cloze(front_content, back_content)
-        payload_image_fields = ["Text" if image_path_front else "Back Extra"]
-    else:
-        payload_builder = payload_builder.basic(front_content, back_content)
-        payload_image_fields = ["Front" if image_path_front else "Back"]
-
-    # Add the correct field for the correct note type
-    # e.g. image_path_front for a Cloze note should be "Text"
-    if isinstance(payload_builder, ImageNoteBuilder):
-        if isinstance(image_path_front, str) and (
-            "Text" in payload_image_fields or "Front" in payload_image_fields
-        ):
-            filename = os.path.basename(image_path_front)
-            payload_builder.add_picture(
-                image_path_front, filename, payload_image_fields
-            )
-
-            # Remove the image placeholder from the content to avoid duplication
-            if "Text" in payload_image_fields:
-                front_content = front_content.replace(f"[{image_path_front}]", "")
-                payload_builder.add_field("Text", front_content)
-            else:
-                front_content = front_content.replace(f"[{image_path_front}]", "")
-                payload_builder.add_field("Front", front_content)
-        else:
-            if isinstance(image_path_back, str):
-                filename = os.path.basename(image_path_back)
-                payload_builder.add_picture(
-                    image_path_back, filename, payload_image_fields
-                )
-
-                # Remove the image placeholder from the content to avoid duplication
-                if "Back Extra" in payload_image_fields:
-                    back_content = back_content.replace(f"[{image_path_back}]", "")
-                    payload_builder.add_field("Back Extra", back_content)
-                else:
-                    back_content = back_content.replace(f"[{image_path_back}]", "")
-                    payload_builder.add_field("Back", back_content)
-
+    payload_builder = note_builder_factory(
+        deck_name=deck_name,
+        model_name=model_name,
+        front_content=front_content,
+        back_content=back_content,
+    )
     payload = payload_builder.build()
 
     try:
